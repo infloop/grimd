@@ -20,34 +20,36 @@ var ConfigVersion = "1.0.8"
 
 // Config holds the configuration parameters
 type Config struct {
-	Version           string
-	Sources           []string
-	SourceDirs        []string
-	LogConfig         string
-	Bind              string
-	API               string
-	NXDomain          bool
-	Nullroute         string
-	Nullroutev6       string
-	Nameservers       []string
-	Interval          int
-	Timeout           int
-	Expire            uint32
-	Maxcount          int
-	QuestionCacheCap  int
-	TTL               uint32
-	Blocklist         []string
-	Whitelist         []string
-	CustomDNSRecords  []string
-	ToggleName        string
-	ReactivationDelay uint
-	APIDebug          bool
-	DoH               string
-	UseDrbl           int
-	DrblPeersFilename string
-	DrblBlockWeight   int64
-	DrblTimeout       int
-	DrblDebug         int
+	Version               string
+	Sources               []string
+	SourceDirs            []string
+	LogConfig             string
+	Bind                  string
+	EnableApi             bool
+	API                   string
+	NXDomain              bool
+	Nullroute             string
+	Nullroutev6           string
+	Nameservers           []string
+	NonExistentDomainMode uint32
+	Interval              int
+	Timeout               int
+	Expire                uint32
+	Maxcount              int
+	QuestionCacheCap      int
+	TTL                   uint32
+	Blocklist             []string
+	Whitelist             []string
+	CustomDNSRecords      []string
+	ToggleName            string
+	ReactivationDelay     uint
+	APIDebug              bool
+	DoH                   string
+	UseDrbl               int
+	DrblPeersFilename     string
+	DrblBlockWeight       int64
+	DrblTimeout           int
+	DrblDebug             int
 }
 
 var defaultConfig = `# version this config was generated from
@@ -83,6 +85,9 @@ apidebug = false
 # address to bind to for the DNS server
 bind = "0.0.0.0:53"
 
+# enableapi enables/disables the api
+enableapi = false
+
 # address to bind to for the API server
 api = "127.0.0.1:8080"
 
@@ -97,6 +102,9 @@ nullroutev6 = "0:0:0:0:0:0:0:0"
 
 # nameservers to forward queries to
 nameservers = ["1.1.1.1:53", "1.0.0.1:53"]
+
+# 0 - Report NonExistentDomain (default), 1 - try next nameserver
+nonexistentdomainmode = 0
 
 # concurrency interval for lookups in miliseconds
 interval = 200

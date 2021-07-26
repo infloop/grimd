@@ -3,3 +3,5 @@
 pprof/
 grimd
 *.swp
+dist
+grimd.toml

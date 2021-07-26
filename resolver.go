@@ -32,7 +32,7 @@ type Resolver struct {
 // Lookup will ask each nameserver in top-to-bottom fashion, starting a new request
 // in every second, and return as early as possbile (have an answer).
 // It returns an error if no request has succeeded.
-func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, nameServers []string, DoH string) (message *dns.Msg, err error) {
+func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, nameServers []string, DoH string, NonExistentDomainMode uint32) (message *dns.Msg, err error) {
 	logger.Debugf("Lookup %s, timeout: %d, interval: %d, nameservers: %v, Using DoH: %v", net, timeout, interval, nameServers, DoH != "")
 
 	//Is DoH enabled
@@ -72,6 +72,9 @@ func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, n
 			if r.Rcode == dns.RcodeServerFailure {
 				return
 			}
+			if NonExistentDomainMode == 1 && r.Rcode == dns.RcodeNameError {
+				return
+			}
 		} else {
 			logger.Debugf("%s resolv on %s (%s)\n", UnFqdn(qname), nameserver, net)
 		}
@@ -97,10 +100,11 @@ func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, n
 		}
 	}
 
-	// wait for all the namservers to finish
+	// wait for all the nameservers to finish
 	wg.Wait()
 	select {
 	case r := <-res:
+		logger.Errorf("Return #2")
 		return r, nil
 	default:
 		return nil, ResolvError{qname, net, nameServers}

@@ -2,15 +2,14 @@ package main
 
 import (
 	"bufio"
+	"github.com/gin-gonic/gin"
+	"gopkg.in/gin-contrib/cors.v1"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-
-	"github.com/gin-gonic/gin"
-	"gopkg.in/gin-contrib/cors.v1"
 )
 
 // StartAPIServer starts the API server
@@ -219,6 +218,11 @@ func StartAPIServer(config *Config,
 			reloadChan <- true
 		}(reloadChan)
 	})
+
+	if config.EnableApi == false {
+		logger.Criticalf("API server is NOT enabled")
+		return server, nil
+	}
 
 	listener, err := net.Listen("tcp", config.API)
 	if err != nil {
